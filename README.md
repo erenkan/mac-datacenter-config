@@ -16,7 +16,7 @@ This script automates the configuration of Mac minis for datacenter use.
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/mac-datacenter-config.git
+git clone https://github.com/erenkan/mac-datacenter-config.git
 cd mac-datacenter-config
 ```
 
