@@ -46,6 +46,7 @@ configure_power_settings() {
     sudo pmset -a womp 1  # Enable Wake on Network Access for remote management
     sudo pmset -a autopoweroff 0  # Disable auto power off
     sudo pmset -a standby 0  # Disable standby mode
+    sudo systemsetup -setrestartpowerfailure on
     printf "Power management settings have been updated.\n"
 }
 
@@ -96,12 +97,14 @@ verify_configurations() {
     print_header "1. Software Update Settings"
     auto_check=$(defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticCheckEnabled 2>/dev/null || echo "1")
     auto_download=$(defaults read /Library/Preferences/com.apple.SoftwareUpdate AutomaticDownload 2>/dev/null || echo "1")
-    print_status "Automatic Check" "$([ "$auto_check" = "0" ] && echo true || echo false)"
-    print_status "Automatic Download" "$([ "$auto_download" = "0" ] && echo true || echo false)"
+    print_status "Automatic Check" "$([ "$auto_check" = "1" ] && echo true || echo false)"
+    print_status "Automatic Download" "$([ "$auto_download" = "1" ] && echo true || echo false)"
     
     print_header "2. Power Management Settings"
     printf "${INFO_MARK} Current power settings:\n"
     pmset -g | sed 's/^/  /'
+    power_failure_status=$(sudo systemsetup -getrestartpowerfailure | grep "On" > /dev/null && echo "true" || echo "false")
+    print_status "Restart After Power Failure" "$power_failure_status"
     
     print_header "3. Remote Access Settings"
     ssh_status=$(sudo launchctl list | grep -q "com.openssh.sshd" && echo "true" || echo "false")
